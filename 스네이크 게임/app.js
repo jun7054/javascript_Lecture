@@ -1,127 +1,88 @@
+for(let i=0; i<100; i++){
+    const square = document.createElement("div");
+    document.querySelector(".grid").appendChild(square);
+}
+
 const grid = document.querySelector(".grid");
 const squares = document.querySelectorAll(".grid div");
 const startBtn = document.querySelector("#startBtn");
 const stopBtn = document.querySelector("#stopBtn");
 const scoreDisplay = document.querySelector("#score");
 const width = 10;
-let snake = 0;
-
-function start() {
-    squares[snake].classList.add("snake");
-}
-startBtn.addEventListener("click", start);
-
-function start() {}
-function runGame() {
-    snake = snake + 1;
-    squares[snake].classList.add("snake");
-}
-
-startBtn.addEventListener("click", start);
-moveSnake();
-moveSnake();
-
-function start() {
-    runGame();
-    runGame();
-}
-function runGame() {
-    snake = snake + 1;
-    squares[snake]
-}
-
-const width = 10;
 let interval;
-let intervalTime = 1000;
-function start() {
-    squares[snake].classList.add("snake");
+let intervalTime = 300;
+let dir = 1;
+let appleLoc = 0;
+let score = 0;
+let snake = [2,1,0];
+
+function start(){
+    stop();
+    snake.forEach(function(item){
+        squares[item].classList.add("snake");
+    })
+    makeApple()
+    scoreDisplay.innerText = score;
     interval = setInterval(runGame, intervalTime);
 }
-function runGame() {
-    squares[snake].classList.remove("snake");
-    snake = snake + 1;
-    squares[snake].classList.add("snake");
-}
-starBtn.addEventListener("click", start);
-moveSnake();
-moveSnake();
-moveSnake();
 
-let intervalTime = 1000;
-let dir = 1;
-
-function start() {}
-function runGame() {
-    squares[snake].classList.remove("snake");
-    snake = snake + dir;
-    squares[snake].classList.add("snake");
-}
-function move(e) {
-    if (e.keyCode === 37) {dir = -1}
-    else if (e.keyCode === 39) {dir = 1}
-    else if (e.keyCode === 38) {dir = -width}
-    else if (e.keyCode === 40) {dir = width}
-}
-document.addEventListener("keyup", move)
-startBtn.addEventListener("click", start)
-
-let intervalTime = 1000;
-let dir = 1;
-
-function start() {}
-function runGame() {
-    squares[snake].classList.remove("snake");
-    snake = snake + dir;
-    squares[snake].classList.add("snake");
-}-
-
-function move(e) {
-    if (e.keyCode === 37) {dir = -1}
-    else if (e.keyCode === 39) {dir = 1}
-    else if (e.keyCode === 38) {dir = -width}
-    else if (e.keyCode === 40) {dir = width}
-}
-document.addEventListener("keyup", move)
-startBtn.addEventListener("click", start)
-
-let dir = 1
-let appleLoc = 0;
-function start() {
-    makeApple()
-    interval = setInterval(moveSnake, intervalTime);
-}
-function makeApple() {
-    appleLoc = Math.floor(Math.random() * squares.length);
-    squares[appleLoc].classList.add("apple");
-}
-
-function runGame() {
-    snake.unshift(snake[0]+dir);
-    if (squares[snake[0]].classList.contains("apple"))
-    {54444444444
-        makeApple();
-    } else {
-        const tail = snake.pop()
-        squares[tail].classList.remove("snake");
-    }
-    squares[snake[0]].classList.add()
-}
-function runGame() {
+function runGame(){
     if (
-        (snake[0]%width === width-1 && dir === 1)
-        (snake[0]%width === 0 && dir === -1)
-        (snake[0]+width >= width*width && dir === width)
-        (snake[0]-width === width-1 && dir === 1)
+        (snake[0]%width === width-1 && dir === 1) || 
+        (snake[0]%width === 0 && dir === -1) ||
+        (snake[0]+width >= width*width && dir === width) ||
+        (snake[0]-width < 0 && dir === -width) ||
         (squares[snake[0]+dir].classList.contains("snake"))
-
-    ) {
+    ){
         clearInterval(interval);
         return;
     }
+    snake.unshift(snake[0]+dir)
+    if (squares[snake[0]].classList.contains("apple"))
+    {
+        scoreDisplay.innerText = ++score;
+        intervalTime = intervalTime * 0.99
+        clearInterval(interval);
+        interval = setInterval(runGame, intervalTime);
+        squares[snake[0]].classList.remove("apple");
+        squares[snake[0]].classList.add("snake");
+        makeApple();
+    } 
+    else {
+        const tail = snake.pop()
+        squares[tail].classList.remove("snake");
+    }
+    squares[snake[0]].classList.add("snake");
 }
-function makeApple() {
+
+function move(e) {
+    if (e.keyCode === 37) { dir = -1 }
+    else if (e.keyCode === 39) {dir=1}
+    else if (e.keyCode === 38) {dir=-width}
+    else if (e.keyCode === 40) {dir = width} 
+}
+
+document.addEventListener("keyup", move)
+startBtn.addEventListener("click", start)
+
+function makeApple(){
     do {
         appleLoc = Math.floor(Math.random() * squares.length);
-    } while (squares[appleLoc].classList.contains("apple"));
-    squares[appleLoc].classList.add("apple");                                                                                                                                                                                                                      
+    } while (squares[appleLoc].classList.contains("snake"));
+    squares[appleLoc].classList.add("apple");
 }
+
+function stop(){
+    snake.forEach(function(item){
+        squares[item].classList.remove("snake");
+    });
+    squares[appleLoc].classList.remove("apple");
+    clearInterval(interval);
+    score = 0;
+    intervalTime = 300;
+    snake = [2,1,0];
+    dir = 1;
+    appleLoc = 0;
+    score = 0;
+}
+stopBtn.addEventListener("click", stop);
